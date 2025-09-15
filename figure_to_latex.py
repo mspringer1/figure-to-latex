@@ -1,10 +1,3 @@
-"""
-figure_to_latex.py — Export Matplotlib figures to LaTeX (PGF) with exact \textwidth.
-
-Keywords: matplotlib to latex, export matplotlib to PGF, publication-ready figures,
-usetex, pgf backend, thesis plots, scientific plots, no scaling, textwidth.
-"""
-
 from __future__ import annotations
 
 from pathlib import Path
