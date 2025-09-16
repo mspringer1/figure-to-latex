@@ -96,6 +96,37 @@ export_latex(
 )
 ```
 
+## Example exports
+
+All three examples below use the same sine-wave data from the usage snippet (\(y = \sin(x^2)\) over \([0, 2\pi]\)).
+
+`export_latex` settings used:
+
+```python
+# Auto height (aspect inferred, no side margins)
+export_latex(fig, name="auto_height_no_margins")
+
+# Taller figure by fixing the aspect ratio
+export_latex(fig, name="tall_aspect", aspect=1.2)
+
+# Extra breathing room on both sides
+export_latex(fig, name="wide_margins", side_margin=0.12)
+```
+
+#### Auto height, no side margins
+
+![Auto height, no side margins](docs/examples/auto_height_no_margins.svg)
+
+#### Fixed aspect = 1.2 (taller)
+
+![Fixed aspect 1.2](docs/examples/tall_aspect.svg)
+
+#### Side margin = 0.12 (wider gutters)
+
+![Side margin 0.12](docs/examples/wide_margins.svg)
+
+Recreate the static SVG previews via `python docs/examples/generate_example_plots.py`.
+
 Recommended LaTeX include
 
 Use PGF directly (no scaling in LaTeX):
