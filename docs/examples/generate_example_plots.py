@@ -1,8 +1,13 @@
-"""Generate static SVG plots for README examples."""
+"""Generate static SVG previews for the README examples."""
 from __future__ import annotations
 
 import math
 from pathlib import Path
+
+FONT_STACK = (
+    "'CMU Serif', 'Computer Modern', 'Latin Modern Roman', "
+    "'Times New Roman', 'Nimbus Roman', serif"
+)
 
 
 def compute_data(samples: int = 400) -> tuple[list[float], list[float]]:
@@ -21,14 +26,20 @@ def format_pi(value: float) -> str:
     if factor == 0:
         return "0"
     if factor == 1:
-        return "π/2"
+        return "½𝜋"
     if factor == 2:
-        return "π"
+        return "𝜋"
     if factor == 3:
-        return "3π/2"
+        return "3⁄2·𝜋"
     if factor == 4:
-        return "2π"
+        return "2𝜋"
     return f"{value:.2f}"
+
+
+def format_tick(value: float) -> str:
+    if abs(value) < 1e-9:
+        return "0"
+    return f"{value:+.1f}".replace("-", "−").replace("+", "")
 
 
 def map_points(
@@ -96,7 +107,7 @@ def svg_plot(
         norm = (val - y_min) / (y_max - y_min)
         return height - bottom - norm * plot_h
 
-    legend_x = left + plot_w * 0.03
+    legend_x = left + plot_w * 0.04
     legend_y = top + plot_h * 0.08
 
     polyline_points = " ".join(f"{x:.2f},{y:.2f}" for x, y in coords)
@@ -105,27 +116,27 @@ def svg_plot(
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
         f"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"{width}\" height=\"{height}\" viewBox=\"0 0 {width} {height}\">",
         "  <rect x=\"0\" y=\"0\" width=\"100%\" height=\"100%\" fill=\"#ffffff\" />",
-        "  <style>text { font-family: 'DejaVu Sans', Arial, sans-serif; fill: #222; }</style>",
+        f"  <style>text {{ font-family: {FONT_STACK}; fill: #1a1a1a; }}</style>",
         f"  <text x=\"{width / 2:.1f}\" y=\"{top * 0.55:.1f}\" font-size=\"24\" text-anchor=\"middle\">{title}</text>",
-        f"  <text x=\"{width / 2:.1f}\" y=\"{top * 0.55 + 24:.1f}\" font-size=\"16\" text-anchor=\"middle\" fill=\"#555\">{subtitle}</text>",
+        f"  <text x=\"{width / 2:.1f}\" y=\"{top * 0.55 + 22:.1f}\" font-size=\"16\" text-anchor=\"middle\" fill=\"#4b4b4b\">{subtitle}</text>",
         f"  <rect x=\"{left}\" y=\"{top}\" width=\"{plot_w}\" height=\"{plot_h}\" fill=\"#fafafa\" stroke=\"#d0d0d0\" stroke-width=\"1\" />",
     ]
 
     for xt in x_ticks:
         x_px = x_to_px(xt)
         svg_parts.append(
-            f"  <line x1=\"{x_px:.2f}\" y1=\"{top}\" x2=\"{x_px:.2f}\" y2=\"{top + plot_h}\" stroke=\"#e0e0e0\" stroke-width=\"1\" stroke-dasharray=\"4 4\" />"
+            f"  <line x1=\"{x_px:.2f}\" y1=\"{top}\" x2=\"{x_px:.2f}\" y2=\"{top + plot_h}\" stroke=\"#e4e4e4\" stroke-width=\"1\" stroke-dasharray=\"4 4\" />"
         )
     for yt in y_ticks:
         y_px = y_to_px(yt)
         svg_parts.append(
-            f"  <line x1=\"{left}\" y1=\"{y_px:.2f}\" x2=\"{left + plot_w}\" y2=\"{y_px:.2f}\" stroke=\"#e0e0e0\" stroke-width=\"1\" stroke-dasharray=\"4 4\" />"
+            f"  <line x1=\"{left}\" y1=\"{y_px:.2f}\" x2=\"{left + plot_w}\" y2=\"{y_px:.2f}\" stroke=\"#e4e4e4\" stroke-width=\"1\" stroke-dasharray=\"4 4\" />"
         )
 
     svg_parts.extend(
         [
-            f"  <text x=\"{left + plot_w / 2:.2f}\" y=\"{height - bottom / 2:.2f}\" font-size=\"18\" text-anchor=\"middle\">X axis label</text>",
-            f"  <text x=\"{left * 0.35:.2f}\" y=\"{top + plot_h / 2:.2f}\" font-size=\"18\" text-anchor=\"middle\" transform=\"rotate(-90 {left * 0.35:.2f} {top + plot_h / 2:.2f})\">Y axis label</text>",
+            f"  <text x=\"{left + plot_w / 2:.2f}\" y=\"{height - bottom / 2:.2f}\" font-size=\"18\" text-anchor=\"middle\" font-style=\"italic\">𝑥 (𝑟𝑎𝑑)</text>",
+            f"  <text x=\"{left * 0.33:.2f}\" y=\"{top + plot_h / 2:.2f}\" font-size=\"18\" text-anchor=\"middle\" font-style=\"italic\" transform=\"rotate(-90 {left * 0.33:.2f} {top + plot_h / 2:.2f})\">𝑦</text>",
         ]
     )
 
@@ -138,23 +149,23 @@ def svg_plot(
     for yt in y_ticks:
         y_px = y_to_px(yt)
         svg_parts.append(
-            f"  <text x=\"{left - 12:.2f}\" y=\"{y_px + 5:.2f}\" font-size=\"14\" text-anchor=\"end\">{yt:g}</text>"
+            f"  <text x=\"{left - 14:.2f}\" y=\"{y_px + 5:.2f}\" font-size=\"14\" text-anchor=\"end\">{format_tick(yt)}</text>"
         )
 
     svg_parts.append(
-        f"  <polyline points=\"{polyline_points}\" fill=\"none\" stroke=\"#1f77b4\" stroke-width=\"2.5\" />"
+        f"  <polyline points=\"{polyline_points}\" fill=\"none\" stroke=\"#1a4f9c\" stroke-width=\"2.5\" />"
     )
 
     svg_parts.extend(
         [
-            f"  <rect x=\"{legend_x - 10:.2f}\" y=\"{legend_y - 18:.2f}\" width=\"180\" height=\"40\" rx=\"6\" ry=\"6\" fill=\"#ffffff\" stroke=\"#d0d0d0\" />",
-            f"  <line x1=\"{legend_x:.2f}\" y1=\"{legend_y:.2f}\" x2=\"{legend_x + 60:.2f}\" y2=\"{legend_y:.2f}\" stroke=\"#1f77b4\" stroke-width=\"2.5\" />",
-            f"  <text x=\"{legend_x + 70:.2f}\" y=\"{legend_y + 5:.2f}\" font-size=\"15\">{legend_label}</text>",
+            f"  <rect x=\"{legend_x - 12:.2f}\" y=\"{legend_y - 18:.2f}\" width=\"188\" height=\"42\" rx=\"6\" ry=\"6\" fill=\"#ffffff\" stroke=\"#c7c7c7\" />",
+            f"  <line x1=\"{legend_x:.2f}\" y1=\"{legend_y:.2f}\" x2=\"{legend_x + 62:.2f}\" y2=\"{legend_y:.2f}\" stroke=\"#1a4f9c\" stroke-width=\"2.5\" />",
+            f"  <text x=\"{legend_x + 72:.2f}\" y=\"{legend_y + 5:.2f}\" font-size=\"15\" font-style=\"italic\">{legend_label}</text>",
         ]
     )
 
     svg_parts.append(
-        f"  <text x=\"{width / 2:.1f}\" y=\"{height - bottom * 0.25:.1f}\" font-size=\"15\" text-anchor=\"middle\" fill=\"#666\">{side_label}</text>"
+        f"  <text x=\"{width / 2:.1f}\" y=\"{height - bottom * 0.25:.1f}\" font-size=\"15\" text-anchor=\"middle\" fill=\"#4b4b4b\">{side_label}</text>"
     )
 
     svg_parts.append("</svg>")
@@ -168,38 +179,38 @@ if __name__ == "__main__":
         out_dir / "auto_height_no_margins.svg",
         width=900,
         height=600,
-        left=80,
-        right=40,
-        top=80,
-        bottom=90,
-        title="Example Plot",
+        left=84,
+        right=44,
+        top=86,
+        bottom=96,
+        title="Example plot",
         subtitle="Auto height • Side margins disabled",
-        side_label="export_latex(fig, name=..., fraction=1.0)",
-        legend_label="Sine wave",
+        side_label="export_latex(fig, name=…, fraction=1.0)",
+        legend_label="𝑠𝑖𝑛(𝑥²)",
     )
     svg_plot(
         out_dir / "tall_aspect.svg",
         width=900,
         height=840,
-        left=80,
-        right=40,
-        top=80,
-        bottom=110,
-        title="Example Plot",
+        left=84,
+        right=44,
+        top=86,
+        bottom=120,
+        title="Example plot",
         subtitle="Fixed aspect = 1.2 (taller)",
-        side_label="export_latex(fig, name=..., aspect=1.2)",
-        legend_label="Sine wave",
+        side_label="export_latex(fig, name=…, aspect=1.2)",
+        legend_label="𝑠𝑖𝑛(𝑥²)",
     )
     svg_plot(
         out_dir / "wide_margins.svg",
         width=900,
         height=600,
-        left=160,
-        right=160,
-        top=80,
-        bottom=90,
-        title="Example Plot",
+        left=168,
+        right=168,
+        top=86,
+        bottom=96,
+        title="Example plot",
         subtitle="Side margin = 0.12",
-        side_label="export_latex(fig, name=..., side_margin=0.12)",
-        legend_label="Sine wave",
+        side_label="export_latex(fig, name=…, side_margin=0.12)",
+        legend_label="𝑠𝑖𝑛(𝑥²)",
     )
