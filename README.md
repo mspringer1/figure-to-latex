@@ -113,15 +113,15 @@ export_latex(fig, name="example2", side_margin=0.3, aspect=0.5)
 
 #### Auto height, no side margins
 
-![Auto height, no side margins](docs/examples/example1.svg)
+![Auto height, no side margins](docs/examples/example1.png)
 
 #### Side margin = 0.3
 
-![Fixed aspect 1.2](docs/examples/example2.svg)
+![Fixed aspect 1.2](docs/examples/example2.png)
 
 #### Side margin = 0.3 and Fixed aspect = 0.5
 
-![Side margin 0.12](docs/examples/example3.svg)
+![Side margin 0.12](docs/examples/example3.png)
 
 Recommended LaTeX include
 
