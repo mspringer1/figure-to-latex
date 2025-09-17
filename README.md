@@ -23,7 +23,7 @@ Open `figure_to_latex.py` and set these at the top:
 # figure_to_latex.py  (top of file)
 
 # 1) Your LaTeX \textwidth in TeX points
-TEXTWIDTH_PT = 455.24408
+TEXTWIDTH_PT = 345.0
 
 # 2) Your document font sizes and LaTeX engine
 _DEFAULTS = {
