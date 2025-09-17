@@ -23,7 +23,7 @@ Open `figure_to_latex.py` and set these at the top:
 # figure_to_latex.py  (top of file)
 
 # 1) Your LaTeX \textwidth in TeX points
-TEXTWIDTH_PT = 455.24408
+TEXTWIDTH_PT = 345.0
 
 # 2) Your document font sizes and LaTeX engine
 _DEFAULTS = {
@@ -95,6 +95,33 @@ export_latex(
     # debug=True,
 )
 ```
+
+## Example exports
+
+`export_latex` settings used:
+
+```python
+# Auto height (aspect inferred, no side margins)
+export_latex(fig, name="example1")
+
+# Extra breathing room on both sides
+export_latex(fig, name="example2", side_margin=0.3)
+
+# Shorter figure by fixing the aspect ratio
+export_latex(fig, name="example2", side_margin=0.3, aspect=0.5)
+```
+
+#### Auto height, no side margins
+
+![Auto height, no side margins](docs/examples/example1.png)
+
+#### Side margin = 0.3
+
+![Fixed aspect 1.2](docs/examples/example2.png)
+
+#### Side margin = 0.3 and Fixed aspect = 0.5
+
+![Side margin 0.12](docs/examples/example3.png)
 
 Recommended LaTeX include
 

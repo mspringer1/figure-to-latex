@@ -13,7 +13,7 @@ __all__ = ["configure_latex", "export_latex"]
 # Project-wide settings
 # --------------------------------------------------------------------
 # Set this once to your LaTeX document's \textwidth (TeX points; 72.27 pt = 1 in)
-TEXTWIDTH_PT: float = 455.24408
+TEXTWIDTH_PT: float = 345.0
 
 _DEFAULTS: Dict[str, Any] = {
     # TeX engine / fonts
@@ -22,10 +22,10 @@ _DEFAULTS: Dict[str, Any] = {
     "serif": ["Computer Modern"],
 
     # Font sizes (pt)
-    "base_font_pt": 12.5,
+    "base_font_pt": 11,
     "axes_label_pt": None,              # None -> use base_font_pt
-    "tick_font_pt": 11,
-    "legend_font_pt": 11,
+    "tick_font_pt": 10,
+    "legend_font_pt": 10,
 
     # TeX integration
     "use_tex": True,
